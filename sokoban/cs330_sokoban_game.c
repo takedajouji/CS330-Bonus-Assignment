@@ -114,7 +114,6 @@ int drawScreen(int rows, int cols, int *map){
 
 /* ========== TO DO ========== */
 /* create the two functions: validMove() and movePlayer() */
-
 /* 
 Takes an int to represent the direction: 0 = up, 1=right, 2=down, 3=left
     see also dX and dY
@@ -132,6 +131,21 @@ returns an int to represent whether this move is valid:
 */
 int validMove(int direction, Player *p, int *map){
     /* === TO DO === */
+    int dx [4] = {0, 1, 0, -1}; // array for x directions
+    int dy [4] = {-1, 0, 1, 0} // array for y directions
+
+    int posX = p -> x + dx[direction];
+    int posY = p -> y + dy[direction];
+
+    int position = posX + WIN_WIDTH * posY;
+
+    if (posX < 0 || posX >= WIDTH || posY < 0 || posY >= HEIGHT )
+        return 0;
+    
+    if (map[position] == '#' || map[position] == '*')
+    return 0;
+
+
     return 0;
 }  // end validMove
 
@@ -154,7 +168,21 @@ returns: nothing
 */
 void movePlayer(int direction, Player *p, int *map){
     /* === TO DO === */
+    int dx [4] = {0, 1, 0, -1}; // array for x directions
+    int dy [4] = {-1, 0, 1, 0} // array for y directions
 
+    int posX = p -> x + dx[direction];
+    int posY = p -> y + dy[direction];
+
+    if(validMove(direction, p, map)){
+        map[newPos] = 'P';
+        map[currentPos] = '';
+
+        p -> x = posX;
+        p -> y = posY;
+    }
+    
+   
     return;
 }  // end movePlayer()
 
@@ -261,21 +289,21 @@ int main(){
         /* ======= TODO ======= */
 
         // if it's a valid move, move player (and star)
-        /* uncomment this section as you write the functions above
+        // uncomment this section as you write the functions above
         if (validMove(delta, p, map)){
             // move player (and star)
             movePlayer(delta, p, map);
         }
-        */
+        
         
 
         /* comment this section out and uncomment the section above
           NOTE:  There should be no TA_... in your code
         */
-        if (TA_validMove(delta, p, map)){
+        /*if (TA_validMove(delta, p, map)){
             // move player (and star)
             TA_movePlayer(delta, p, map);
-        }
+        }*/
         
 
         /* ======= END TO DO ======= */
