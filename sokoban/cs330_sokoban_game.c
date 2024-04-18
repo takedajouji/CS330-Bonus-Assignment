@@ -130,28 +130,35 @@ returns an int to represent whether this move is valid:
             push star off goal
 */
 int validMove(int direction, Player *p, int *map){
-   
     int dx[4] = {0, 1, 0, -1}; // Array for x directions
     int dy[4] = {-1, 0, 1, 0}; // Array for y directions
 
-    // Calculates the position of the player
-    int posX = p -> x + dx[direction];
-    int posY = p -> y + dy[direction];
+    // Calculate the new position after the move
+    int posX = p->x + dx[direction];
+    int posY = p->y + dy[direction];
 
-    //Updates the position
+    // Calculate the position index in the map array
     int newPos = posX + MAP_COLS * posY;
 
     // Out of bounds checker
     if (posX < 0 || posX >= MAP_COLS || posY < 0 || posY >= MAP_ROWS)
         return 0;
 
-    // Checks if its a wall or a star
-    if (map[newPos] == '#' || map[newPos] == '$')
+    // Check if the new position is a wall or a star
+    if (map[newPos] == 1 || map[newPos] == 3 || map[newPos] == 5)
         return 0;
 
+    // Check if the player is attempting to push a star into another star or a wall
+    if (map[newPos] == 4) {
+        // Calculate the position beyond the goal
+        int nextPos = (posX + dx[direction]) + MAP_COLS * (posY + dy[direction]);
+        if (map[nextPos] == 3 || map[nextPos] == 5) // If the next position is a star or a star on a goal
+            return 0;
+    }
 
-    return 1;
+    return 1; // Valid move
 }
+
 
 // end validMove
 
