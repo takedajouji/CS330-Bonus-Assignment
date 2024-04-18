@@ -130,24 +130,30 @@ returns an int to represent whether this move is valid:
             push star off goal
 */
 int validMove(int direction, Player *p, int *map){
-    /* === TO DO === */
-    int dx [4] = {0, 1, 0, -1}; // array for x directions
-    int dy [4] = {-1, 0, 1, 0} // array for y directions
+   
+    int dx[4] = {0, 1, 0, -1}; // Array for x directions
+    int dy[4] = {-1, 0, 1, 0}; // Array for y directions
 
+    // Calculates the position of the player
     int posX = p -> x + dx[direction];
     int posY = p -> y + dy[direction];
 
-    int position = posX + WIN_WIDTH * posY;
+    //Updates the position
+    int newPos = posX + MAP_COLS * posY;
 
-    if (posX < 0 || posX >= WIDTH || posY < 0 || posY >= HEIGHT )
+    // Out of bounds checker
+    if (posX < 0 || posX >= MAP_COLS || posY < 0 || posY >= MAP_ROWS)
         return 0;
-    
-    if (map[position] == '#' || map[position] == '*')
-    return 0;
+
+    // Checks if its a wall or a star
+    if (map[newPos] == '#' || map[newPos] == '$')
+        return 0;
 
 
-    return 0;
-}  // end validMove
+    return 1;
+}
+
+// end validMove
 
 
 /* function won't be called unless we know it's a valid move
@@ -167,24 +173,42 @@ takes direction (of move), Player, and map
 returns: nothing
 */
 void movePlayer(int direction, Player *p, int *map){
-    /* === TO DO === */
-    int dx [4] = {0, 1, 0, -1}; // array for x directions
-    int dy [4] = {-1, 0, 1, 0} // array for y directions
 
-    int posX = p -> x + dx[direction];
-    int posY = p -> y + dy[direction];
+    int dx[4] = {0, 1, 0, -1}; // Array for x directions
+    int dy[4] = {-1, 0, 1, 0}; // Array for y directions
 
-    if(validMove(direction, p, map)){
-        map[newPos] = 'P';
-        map[currentPos] = '';
+    // Calculate the new position after the move
+    int posX = p->x + dx[direction];
+    int posY = p->y + dy[direction];
 
-        p -> x = posX;
-        p -> y = posY;
+    // Calculate the position index in the map array
+    int newPos = posX + MAP_COLS * posY;
+
+    // calls validMove to check if the move is valid
+    if (validMove(direction, p, map)) {
+       
+        map[newPos] = 2; // New position for player
+        
+        
+        if (p -> prevSquareValue == 4) {
+            map[p -> x + MAP_COLS * p -> y] = 3; // Restore the goal square
+        } else {
+            map[p -> x + MAP_COLS * p -> y] = p->prevSquareValue; // Restore the previous square
+        }
+        
+        // Changes the players position to the updated value
+        p->x = posX;
+        p->y = posY;
+
+        //Updates the prvSqrValue to the newPos
+        p->prevSquareValue = map[newPos];
+
+        //Increments steps
+        NUM_STEPS++;
     }
-    
-   
     return;
-}  // end movePlayer()
+}
+// end movePlayer()
 
 /* ========== END TO DO FUNCTIONS ========== */
 
