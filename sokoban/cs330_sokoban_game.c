@@ -173,7 +173,6 @@ takes direction (of move), Player, and map
 returns: nothing
 */
 void movePlayer(int direction, Player *p, int *map){
-
     int dx[4] = {0, 1, 0, -1}; // Array for x directions
     int dy[4] = {-1, 0, 1, 0}; // Array for y directions
 
@@ -184,26 +183,14 @@ void movePlayer(int direction, Player *p, int *map){
     // Calculate the position index in the map array
     int newPos = posX + MAP_COLS * posY;
 
-    // calls validMove to check if the move is valid
-    if (validMove(direction, p, map)) {
-       
-        map[newPos] = 2; // New position for player
-        
-        
-        if (p -> prevSquareValue == 4) {
-            map[p -> x + MAP_COLS * p -> y] = 3; // Restore the goal square
-        } else {
-            map[p -> x + MAP_COLS * p -> y] = p->prevSquareValue; // Restore the previous square
-        }
-        
-        // Changes the players position to the updated value
+    // Check if the move is valid and if it's a direction change
+    if (validMove(direction, p, map) && map[newPos] != 1) {
+        // Update the player's direction
         p->x = posX;
         p->y = posY;
+        p->prevSquareValue = map[newPos]; // Update the previous square value
 
-        //Updates the prvSqrValue to the newPos
-        p->prevSquareValue = map[newPos];
-
-        //Increments steps
+        // Increment steps
         NUM_STEPS++;
     }
     return;
