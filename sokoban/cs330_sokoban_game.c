@@ -130,36 +130,28 @@ returns an int to represent whether this move is valid:
             push star off goal
 */
 int validMove(int direction, Player *p, int *map){
+   
     int dx[4] = {0, 1, 0, -1}; // Array for x directions
     int dy[4] = {-1, 0, 1, 0}; // Array for y directions
 
-    // Calculate the new position after the move
-    int posX = p->x + dx[direction];
-    int posY = p->y + dy[direction];
+    // Calculates the position of the player
+    int posX = p -> x + dx[direction];
+    int posY = p -> y + dy[direction];
 
-    // Calculate the position index in the map array
+    //Updates the position
     int newPos = posX + MAP_COLS * posY;
 
     // Out of bounds checker
     if (posX < 0 || posX >= MAP_COLS || posY < 0 || posY >= MAP_ROWS)
         return 0;
 
-    // Check if the new position is a wall or a star
-    if (map[newPos] == 1 || map[newPos] == 3 || map[newPos] == 5)
+    // Checks if its a wall or a star
+    if (map[newPos] == '#' || map[newPos] == '$')
         return 0;
 
-    // Check if the player is attempting to push a star into another star or a wall
-    if (map[newPos] == 4) {
-        // Calculate the position beyond the goal
-        int nextPos = (posX + dx[direction]) + MAP_COLS * (posY + dy[direction]);
-        if (map[nextPos] == 3 || map[nextPos] == 5) // If the next position is a star or a star on a goal
-            return 0;
-    }
 
-    return 1; // Valid move
+    return 1;
 }
-
-
 // end validMove
 
 
@@ -190,56 +182,18 @@ void movePlayer(int direction, Player *p, int *map){
     // Calculate the position index in the map array
     int newPos = posX + MAP_COLS * posY;
 
-    // Check if the move is valid
-    if (validMove(direction, p, map)) {
-        // Determine the type of move based on the destination square
-        switch (map[newPos]) {
-            case 0: // Blank space
-                // Player moves into blank space
-                p->x = posX;
-                p->y = posY;
-                break;
-            case 3: // Star
-                // Check the square beyond the star
-                int nextPos = (posX + dx[direction]) + MAP_COLS * (posY + dy[direction]);
-                if (map[nextPos] == 0) {
-                    // (2.a) Push star into blank space
-                    map[nextPos] = 3; // Move the star
-                    p->x = posX;
-                    p->y = posY;
-                } else if (map[nextPos] == 4) {
-                    // (2.b) Push star onto goal
-                    map[nextPos] = 5; // Star on goal
-                    p->x = posX;
-                    p->y = posY;
-                    numStarsSolved++; // Increment number of stars on goals
-                } // Add cases for (2.c) and (2.d) if needed
-                break;
-            case 4: // Goal
-                // Player moves onto goal space
-                p->x = posX;
-                p->y = posY;
-                break;
-            case 5: // Star on goal
-                // Player moves onto goal space
-                p->x = posX;
-                p->y = posY;
-                break;
-        }
-
-        // Restore goal if the player moves off it
-        if (p->prevSquareValue == 4) {
-            map[p->x + MAP_COLS * p->y] = 3; // Restore goal
-        }
-
-        // Update the previous square value
-        p->prevSquareValue = map[newPos];
+    // Check if the move is valid and if it's a direction change
+    if (validMove(direction, p, map) && map[newPos] != 1) {
+        // Update the player's direction
+        p->x = posX;
+        p->y = posY;
+        p->prevSquareValue = map[newPos]; // Update the previous square value
 
         // Increment steps
         NUM_STEPS++;
     }
+    return;
 }
-
 // end movePlayer()
 
 /* ========== END TO DO FUNCTIONS ========== */
@@ -252,8 +206,8 @@ int main(){
     int *map = malloc((MAP_ROWS * MAP_COLS) * sizeof(int));
 
     Player *p = malloc(sizeof(Player));
-    //p->x = 2;    // These values are assigned when the map is read in
-    //p->y = 1;
+    p->x = 2;    // These values are assigned when the map is read in
+    p->y = 1;
     p->prevSquareValue = 0;
 
     // read in the map
