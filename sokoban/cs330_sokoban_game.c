@@ -152,6 +152,7 @@ int validMove(int direction, Player *p, int *map){
 
     return 1;
 }
+
 // end validMove
 
 
@@ -206,8 +207,8 @@ int main(){
     int *map = malloc((MAP_ROWS * MAP_COLS) * sizeof(int));
 
     Player *p = malloc(sizeof(Player));
-    p->x = 2;    // These values are assigned when the map is read in
-    p->y = 1;
+    //p->x = 2;    // These values are assigned when the map is read in
+    //p->y = 1;
     p->prevSquareValue = 0;
 
     // read in the map
@@ -299,21 +300,21 @@ int main(){
         /* ======= TODO ======= */
 
         // if it's a valid move, move player (and star)
-        // uncomment this section as you write the functions above
+        /* uncomment this section as you write the functions above
         if (validMove(delta, p, map)){
             // move player (and star)
             movePlayer(delta, p, map);
         }
-        
+        */
         
 
         /* comment this section out and uncomment the section above
           NOTE:  There should be no TA_... in your code
         */
-        /*if (TA_validMove(delta, p, map)){
+        if (TA_validMove(delta, p, map)){
             // move player (and star)
             TA_movePlayer(delta, p, map);
-        }*/
+        }
         
 
         /* ======= END TO DO ======= */
